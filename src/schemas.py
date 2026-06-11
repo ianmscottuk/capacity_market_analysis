@@ -24,3 +24,11 @@ class CapacityBuyer(BaseModel):
 
     def spare_capacity(self, active_capacity_mw: float) -> float:
         return active_capacity_mw - self.target_capacity_mw
+
+
+class AuctionRound(BaseModel):
+    round_number: int
+    price_cap: float
+    price_floor: float
+    active_capacity_mw: float
+    exited_capacity_mw: float

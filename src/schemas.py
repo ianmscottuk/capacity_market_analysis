@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, PositiveFloat
+from pydantic import BaseModel, Field, PositiveFloat, computed_field
 
 
 class CapacityMarketUnit(BaseModel):
@@ -9,9 +9,7 @@ class CapacityMarketUnit(BaseModel):
     min_acceptable_price: float = Field(ge=0)
     is_price_taker: bool
 
-    def can_exit_at_price(
-        self, current_auction_price: float, price_taker_threshold: float
-    ) -> bool:
+    def exit_at_price(self, current_auction_price: float) -> bool:
         return current_auction_price <= self.min_acceptable_price
 
 
@@ -20,7 +18,12 @@ class CapacityBuyer(BaseModel):
     target_capacity_mw: PositiveFloat = Field(
         description="Capacity the buyer wants to procure."
     )
-    price_cap_per_kw_year: PositiveFloat = Field(description="Maximum auction price.")
+    net_CONE: PositiveFloat = Field(description="Net cost of new entry.")
+
+    @computed_field
+    @property
+    def price_cap_per_kw_year(self) -> float:
+        return 1.5 * self.net_CONE
 
     def spare_capacity(self, active_capacity_mw: float) -> float:
         return active_capacity_mw - self.target_capacity_mw
@@ -28,7 +31,7 @@ class CapacityBuyer(BaseModel):
 
 class AuctionRound(BaseModel):
     round_number: int
-    price_cap: float
-    price_floor: float
+    price: float
     active_capacity_mw: float
     exited_capacity_mw: float
+    spare_capacity_mw: float

@@ -1,10 +1,10 @@
-from schemas import CapacityBuyer, CapacityMarketUnit, AuctionRound
+from schemas import CapacityBuyer, CapacityMarketUnit
 
 
 def baseline_scenario():
     buyer = CapacityBuyer(
         target_capacity_mw=5000.0,
-        price_cap_per_kw_year=75.0,
+        net_CONE=50,
     )
 
     units = [
@@ -13,7 +13,7 @@ def baseline_scenario():
             name="Drax Power Station",
             parent_company="Drax Group",
             capacity_mw=2600.0,
-            min_acceptable_price=50.0,
+            min_acceptable_price=52.0,
             is_price_taker=False,
         ),
         CapacityMarketUnit(
@@ -21,7 +21,7 @@ def baseline_scenario():
             name="Hornsea One",
             parent_company="Orsted",
             capacity_mw=1200.0,
-            min_acceptable_price=0.0,
+            min_acceptable_price=10.0,
             is_price_taker=True,
         ),
         CapacityMarketUnit(
@@ -29,19 +29,9 @@ def baseline_scenario():
             name="West Burton CCGT",
             parent_company="EDF Energy",
             capacity_mw=1300.0,
-            min_acceptable_price=55.0,
+            min_acceptable_price=39.0,
             is_price_taker=False,
         ),
     ]
 
-    rounds = [
-        AuctionRound(
-            round_number=1,
-            price_cap=75.0,
-            price_floor=0.0,
-            active_capacity_mw=5100.0,
-            exited_capacity_mw=0.0,
-        ),
-    ]
-
-    return buyer, units, rounds
+    return buyer, units

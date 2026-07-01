@@ -6,8 +6,18 @@ class CapacityMarketUnit(BaseModel):
     name: str
     parent_company: str
     capacity_mw: float = Field(gt=0)
-    min_acceptable_price: float = Field(ge=0)
     is_price_taker: bool
+
+    min_acceptable_price: float = Field(default=0, ge=0)
+
+    def model_post_init(self, __context) -> None:
+        if "min_acceptable_price" not in self.model_fields_set:
+            self.min_acceptable_price = self.calculate_initial_min_price()
+
+    def calculate_initial_min_price(self) -> float:
+        # TODO: replace with real logic
+        # Despina to provide table of type (renewable/gas etc. and missing money)
+        return 10.0
 
     def exit_at_price(self, current_auction_price: float) -> bool:
         return current_auction_price <= self.min_acceptable_price

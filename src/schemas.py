@@ -25,18 +25,32 @@ class CapacityMarketUnit(BaseModel):
 
 class CapacityBuyer(BaseModel):
     name: str = "System Operator"
-    target_capacity_mw: PositiveFloat = Field(
-        description="Capacity the buyer wants to procure."
+    target_capacity: PositiveFloat = Field(
+        description="Capacity the buyer wants to procure, GW."
     )
     net_CONE: PositiveFloat = Field(description="Net cost of new entry.")
 
     @computed_field
     @property
-    def price_cap_per_kw_year(self) -> float:
+    def price_cap(self) -> float:
         return 1.5 * self.net_CONE
 
-    def spare_capacity(self, active_capacity_mw: float) -> float:
-        return active_capacity_mw - self.target_capacity_mw
+    def demand_capacity(self, price_current: float) -> float:
+
+        if price_current > self.price_cap:
+            raise ValueError("Current price cannot exceed the auction cap.")
+
+        if price_current < 0:
+            raise ValueError("Current price cannot be negative.")
+
+        if price_current > self.net_CONE:
+            demand = (self.target_capacity - 1.5) + 1.5 * (
+                price_current - self.price_cap
+            ) / (self.net_CONE - self.price_cap)
+        else:
+            demand = self.target_capacity + 1.5 * (1 - price_current / self.net_CONE)
+
+        return demand
 
 
 class AuctionRound(BaseModel):

@@ -1,20 +1,33 @@
 import pytest
+
 from src.schemas import CapacityBuyer
+
+TARGET = 5.0
+NETCONE = 50.0
 
 
 @pytest.fixture
 def buyer():
-    return CapacityBuyer(
-        target_capacity_mw=1000.0,
-        price_cap_per_kw_year=75.0,
-    )
+    return CapacityBuyer(target_capacity=TARGET, net_CONE=NETCONE)
 
 
-class TestSpareCapacity:
-    @pytest.mark.parametrize("active_capacity_mw,expected", [
-        (1200.0, 200.0),   # surplus
-        (1000.0, 0.0),     # exactly at target
-        (800.0, -200.0),   # shortfall
-    ])
-    def test_spare_capacity(self, buyer, active_capacity_mw, expected):
-        assert buyer.spare_capacity(active_capacity_mw) == expected
+def test_demand_capacity_above_price_cap(buyer):
+    with pytest.raises(ValueError):
+        buyer.demand_capacity(buyer.price_cap + 1)
+
+
+def test_demand_capacity_negative(buyer):
+    with pytest.raises(ValueError):
+        buyer.demand_capacity(-1)
+
+
+def test_demand_capacity_at_price_cap(buyer):
+    assert buyer.demand_capacity(buyer.price_cap) == TARGET - 1.5
+
+
+def test_demand_capacity_at_net_cone(buyer):
+    assert buyer.demand_capacity(NETCONE) == TARGET
+
+
+def test_demand_capacity_at_zero(buyer):
+    assert buyer.demand_capacity(0) == TARGET + 1.5

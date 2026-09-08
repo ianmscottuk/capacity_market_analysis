@@ -1,6 +1,7 @@
+from logger import get_logger
 from scenarios import baseline_scenario
 from schemas import AuctionRound
-from logger import get_logger
+from utils import get_capacity, log_exiting_units
 
 logger = get_logger(__name__)
 
@@ -24,11 +25,10 @@ def run_auction(buyer, og_units, price_step=-5):
 
         if any([unit.exit_at_price(price) for unit in active_units]):
             logger.info("Someone wants to exit....")
-            # TODO: Bidding game
-            pass
+            else:
+                log_exiting_units(exiting_units_sorted)
+                active_units = remaining_units
 
-        active_capacity = sum(unit.capacity_mw for unit in active_units)
-        exited_capacity = sum(unit.capacity_mw for unit in og_units) - active_capacity
         spare_capacity = buyer.spare_capacity(active_capacity)
 
         rounds.append(

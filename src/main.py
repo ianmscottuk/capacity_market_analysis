@@ -1,15 +1,17 @@
 from logger import get_logger
 from scenarios import baseline_scenario
 from schemas import AuctionRound
-from utils import get_capacity, log_exiting_units
+from utils import capacity_met, get_capacity
 
 logger = get_logger(__name__)
 
 
-def run_auction(buyer, og_units, price_step=-5):
+def run_auction(buyer, companies, price_step=-5):
 
-    price = buyer.price_cap_per_kw_year + price_step
-    active_units = og_units.copy()
+    units = [unit for company in companies for unit in company.units]
+
+    price = buyer.price_cap + price_step
+    active_units = units.copy()
     round_number = 1
     rounds = []
 
@@ -23,13 +25,16 @@ def run_auction(buyer, og_units, price_step=-5):
             len(active_units),
         )
 
-        if any([unit.exit_at_price(price) for unit in active_units]):
-            logger.info("Someone wants to exit....")
-            else:
-                log_exiting_units(exiting_units_sorted)
-                active_units = remaining_units
+        remaining_units = [unit for unit in active_units if not unit.should_exit(price)]
 
-        spare_capacity = buyer.spare_capacity(active_capacity)
+        if len(remaining_units) < len(active_units):
+            logger.info("Someone wants to exit....")
+
+            if not capacity_met(
+                buyer.demand_capacity(price), remaining_units
+            ):  # these need to be the REMAING units
+                logger.info("insufficient capacity")
+
 
         rounds.append(
             AuctionRound(
@@ -46,6 +51,6 @@ def run_auction(buyer, og_units, price_step=-5):
 
 
 if __name__ == "__main__":
-    buyer, units = baseline_scenario()
+    buyer, companies = baseline_scenario()
 
-    run_auction(buyer, units)
+    run_auction(buyer, companies)

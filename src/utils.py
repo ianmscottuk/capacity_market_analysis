@@ -6,7 +6,7 @@ logger = get_logger(__name__)
 
 
 def get_capacity(units):
-    return sum(unit.capacity_mw for unit in units)
+    return sum(unit.capacity for unit in units)
 
 
 def log_exiting_units(exiting_units: list[tuple[CapacityMarketUnit, float]]) -> None:
@@ -18,3 +18,8 @@ def log_exiting_units(exiting_units: list[tuple[CapacityMarketUnit, float]]) -> 
             unit.cmu_id,
             exit_bid,
         )
+
+
+def get_company(unit, companies):
+    owner = next(company for company in companies if unit in company.units)
+    return owner.name

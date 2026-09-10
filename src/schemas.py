@@ -1,13 +1,15 @@
 from pydantic import BaseModel, Field, PositiveFloat, computed_field
 
 
+class CapacityCompany(BaseModel):
+    name: str
+    units: list["CapacityMarketUnit"]
+
+
 class CapacityMarketUnit(BaseModel):
     cmu_id: str
     name: str
-    parent_company: str
-    capacity_mw: float = Field(gt=0)
-    is_price_taker: bool
-
+    capacity: float = Field(gt=0)
     min_acceptable_price: float = Field(default=0, ge=0)
 
     def model_post_init(self, __context) -> None:

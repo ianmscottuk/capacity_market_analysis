@@ -19,7 +19,8 @@ class CapacityMarketUnit(BaseModel):
         # Despina to provide table of type (renewable/gas etc. and missing money)
         return 10.0
 
-    def exit_at_price(self, current_auction_price: float) -> bool:
+    def should_exit(self, current_auction_price: float) -> bool:
+
         return current_auction_price <= self.min_acceptable_price
 
 

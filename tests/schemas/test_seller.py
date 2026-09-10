@@ -1,4 +1,5 @@
 import pytest
+
 from src.schemas import CapacityMarketUnit
 
 
@@ -24,9 +25,4 @@ class TestCanExitAtPrice:
         ],
     )
     def test_exits_when_price_below_minimum(self, unit, price, expected):
-        assert (
-            unit.can_exit_at_price(
-                current_auction_price=price, price_taker_threshold=100.0
-            )
-            is expected
-        )
+        assert unit.should_exit(current_auction_price=price) is expected

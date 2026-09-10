@@ -1,7 +1,6 @@
 from logger import get_logger
 from schemas import CapacityMarketUnit
 
-
 logger = get_logger(__name__)
 
 
@@ -23,3 +22,8 @@ def log_exiting_units(exiting_units: list[tuple[CapacityMarketUnit, float]]) -> 
 def get_company(unit, companies):
     owner = next(company for company in companies if unit in company.units)
     return owner.name
+
+
+def capacity_met(demand, units):
+    total_capacity = sum(unit.capacity for unit in units)
+    return total_capacity >= demand

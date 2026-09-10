@@ -59,6 +59,6 @@ class CapacityBuyer(BaseModel):
 class AuctionRound(BaseModel):
     round_number: int
     price: float
-    active_capacity_mw: float
-    exited_capacity_mw: float
-    spare_capacity_mw: float
+    active_capacity: float
+    exited_capacity: float
+    spare_capacity: float

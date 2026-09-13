@@ -9,9 +9,8 @@ def unit():
         cmu_id="CMU001",
         name="Test Plant",
         parent_company="Acme Energy",
-        capacity_mw=100.0,
+        capacity=100.0,
         min_acceptable_price=52.0,
-        is_price_taker=False,
     )
 
 

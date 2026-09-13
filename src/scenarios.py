@@ -1,4 +1,4 @@
-from schemas import CapacityBuyer, CapacityCompany, CapacityMarketUnit
+from src.schemas import CapacityBuyer, CapacityCompany, CapacityMarketUnit
 
 
 def baseline_scenario():

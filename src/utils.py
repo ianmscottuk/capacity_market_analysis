@@ -1,5 +1,5 @@
-from logger import get_logger
-from schemas import CapacityMarketUnit
+from src.logger import get_logger
+from src.schemas import CapacityMarketUnit
 
 logger = get_logger(__name__)
 

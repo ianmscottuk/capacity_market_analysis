@@ -27,3 +27,7 @@ def get_company(unit, companies):
 def capacity_met(demand, units):
     total_capacity = sum(unit.capacity for unit in units)
     return total_capacity >= demand
+
+
+def calc_clearing_price():
+    pass

@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.schemas import CapacityMarketUnit
+from src.schemas import CapacityBuyer, CapacityMarketUnit
 
 
 @pytest.fixture
@@ -27,3 +27,11 @@ def units():
             min_acceptable_price=30.0,
         ),
     ]
+
+
+@pytest.fixture
+def buyer():
+    return CapacityBuyer(
+        target_capacity=5,
+        net_CONE=50,
+    )

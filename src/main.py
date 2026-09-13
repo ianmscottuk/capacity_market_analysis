@@ -1,3 +1,4 @@
+from company_strategy import get_remaining_units
 from logger import get_logger
 from scenarios import baseline_scenario
 from schemas import AuctionRound
@@ -25,7 +26,9 @@ def run_auction(buyer, companies, price_step=-5):
             len(active_units),
         )
 
-        remaining_units = [unit for unit in active_units if not unit.should_exit(price)]
+        remaining_units, leaving_units = get_remaining_units(
+            companies=companies, active_units=active_units, price=price
+        )
 
         if len(remaining_units) < len(active_units):
             logger.info("Someone wants to exit....")

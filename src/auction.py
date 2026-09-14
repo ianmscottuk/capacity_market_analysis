@@ -1,12 +1,12 @@
 from src.company_strategy import get_remaining_units
 from src.logger import get_logger
 from src.schemas import AuctionRound
-from src.utils import calc_clearing_price, capacity_met, get_capacity
+from src.utils import capacity_met, get_capacity
 
 logger = get_logger(__name__)
 
 
-def run_auction(buyer, companies, price_step=-5):
+def run_auction(buyer, companies, price_step=-1):
 
     units = [unit for company in companies for unit in company.units]
 
@@ -47,8 +47,22 @@ def run_round(round_number, price, buyer, companies, active_units):
         logger.info("Someone wants to exit....")
 
         if not capacity_met(buyer.demand_capacity(price), remaining_units):
-            logger.info("insufficient capacity")
-            calc_clearing_price()  # calc profit of each company
+            clearing_price = price
+            logger.info(
+                "Remaining capacity is now below demand.\n"
+                "Auction cleared at £%.2f/kW/year.\n"
+                "Some attempted exits must be retained to satisfy required capacity.",
+                clearing_price,
+            )
+
+            keep = select_units_to_keep(
+                leaving_units=leaving_units,
+                remaining_capacity=get_capacity(remaining_units),
+                required_capacity=buyer.demand_capacity(price),
+            )
+            final_units = remaining_units + keep
+
+            # TODO: calc profit of each company
 
     active_capacity = get_capacity(remaining_units)
     exited_capacity = get_capacity(leaving_units)
@@ -63,3 +77,24 @@ def run_round(round_number, price, buyer, companies, active_units):
     )
 
     return remaining_units, auction_round
+
+
+def select_units_to_keep(
+    leaving_units,
+    remaining_capacity,
+    required_capacity,
+):
+    keep_units = []
+
+    leaving_units_sorted = sorted(
+        leaving_units,
+        key=lambda unit: unit.min_acceptable_price,
+    )
+
+    for unit in leaving_units_sorted:
+        if remaining_capacity + get_capacity(keep_units) >= required_capacity:
+            logger.info("Capacity met")
+            break
+        keep_units.append(unit)
+
+    return keep_units

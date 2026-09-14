@@ -18,7 +18,7 @@ def run_auction(buyer, companies, price_step=-1):
     logger.info("Auction Started")
 
     while price > 0:
-        active_units, auction_round = run_round(
+        active_units, auction_round, clearing_price = run_round(
             round_number=round_number,
             price=price,
             buyer=buyer,
@@ -31,6 +31,12 @@ def run_auction(buyer, companies, price_step=-1):
         price += price_step
         round_number += 1
 
+        if clearing_price is not None:
+            break
+
+    # TODO: calc profit of each company
+    print("endex!")
+
 
 def run_round(round_number, price, buyer, companies, active_units):
     logger.info(
@@ -39,6 +45,7 @@ def run_round(round_number, price, buyer, companies, active_units):
         price,
         len(active_units),
     )
+    clearing_price = None
     remaining_units, leaving_units = get_remaining_units(
         companies=companies, active_units=active_units, price=price
     )
@@ -60,9 +67,7 @@ def run_round(round_number, price, buyer, companies, active_units):
                 remaining_capacity=get_capacity(remaining_units),
                 required_capacity=buyer.demand_capacity(price),
             )
-            final_units = remaining_units + keep
-
-            # TODO: calc profit of each company
+            remaining_units = remaining_units + keep
 
     active_capacity = get_capacity(remaining_units)
     exited_capacity = get_capacity(leaving_units)
@@ -76,7 +81,7 @@ def run_round(round_number, price, buyer, companies, active_units):
         spare_capacity=spare_capacity,
     )
 
-    return remaining_units, auction_round
+    return remaining_units, auction_round, clearing_price
 
 
 def select_units_to_keep(

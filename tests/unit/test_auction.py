@@ -5,31 +5,27 @@ from src.schemas import CapacityMarketUnit
 from src.utils import get_capacity
 
 
-def test_run_round_no_units_leave(buyer, units):
-    remaining_units, auction_round, clearing_price = run_round(
+def test_run_round_no_units_leave(buyer, companies):
+    auction_round, clearing_price = run_round(
         round_number=1,
         price=buyer.price_cap,
         buyer=buyer,
-        companies=[],
-        active_units=units,
+        companies=companies,
     )
 
-    assert remaining_units == units
     assert auction_round.round_number == 1
     assert auction_round.price == buyer.price_cap
     assert clearing_price == None
 
 
-def test_run_round_retains_units_when_all_try_to_leave(buyer, units):
-    remaining_units, auction_round, clearing_price = run_round(
+def test_run_round_retains_units_when_all_try_to_leave(buyer, companies):
+    auction_round, clearing_price = run_round(
         round_number=5,
         price=10,
         buyer=buyer,
-        companies=[],
-        active_units=units,
+        companies=companies,
     )
 
-    assert len(remaining_units) == 3
     assert auction_round.round_number == 5
     assert auction_round.price == 10
     assert clearing_price == 10

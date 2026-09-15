@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.schemas import CapacityBuyer, CapacityMarketUnit
+from src.schemas import CapacityBuyer, CapacityCompany, CapacityMarketUnit
 
 
 @pytest.fixture
@@ -26,6 +26,16 @@ def units():
             capacity=1.0,
             min_acceptable_price=30.0,
         ),
+    ]
+
+
+@pytest.fixture
+def companies(units):
+    return [
+        CapacityCompany(
+            name="Test Company",
+            units=units,
+        )
     ]
 
 

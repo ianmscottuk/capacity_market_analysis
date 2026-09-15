@@ -68,6 +68,7 @@ def run_round(round_number, price, buyer, companies, active_units):
                 required_capacity=buyer.demand_capacity(price),
             )
             remaining_units = remaining_units + keep
+        set_exit_price(active_units, remaining_units, price)
 
     active_capacity = get_capacity(remaining_units)
     exited_capacity = get_capacity(leaving_units)
@@ -103,3 +104,9 @@ def select_units_to_keep(
         keep_units.append(unit)
 
     return keep_units
+
+
+def set_exit_price(active_units, remaining_units, price):
+    for unit in active_units:
+        if unit not in remaining_units:
+            unit.exit_price = price

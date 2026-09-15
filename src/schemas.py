@@ -11,6 +11,7 @@ class CapacityMarketUnit(BaseModel):
     name: str
     capacity: float = Field(gt=0)
     min_acceptable_price: float = Field(default=0, ge=0)
+    exit_price: float | None = None
 
     def model_post_init(self, __context) -> None:
         if "min_acceptable_price" not in self.model_fields_set:

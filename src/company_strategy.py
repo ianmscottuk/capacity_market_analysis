@@ -9,3 +9,12 @@ def get_remaining_units(companies, active_units, price):
             remaining_units.append(unit)
 
     return remaining_units, leaving_units
+
+
+def get_active_units(companies):
+    return [
+        unit
+        for company in companies
+        for unit in company.units
+        if unit.exit_price is None
+    ]

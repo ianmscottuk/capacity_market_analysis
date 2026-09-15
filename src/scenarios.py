@@ -12,19 +12,19 @@ def baseline_scenario():
             name="Drax Group",
             units=[
                 CapacityMarketUnit(
-                    cmu_id="CMU005",
+                    cmu_id="CMU001",
                     name="Drax Power Station - clone",
                     capacity=0.1,
                     min_acceptable_price=51.0,
                 ),
                 CapacityMarketUnit(
-                    cmu_id="CMU001",
+                    cmu_id="CMU002",
                     name="Drax Power Station",
                     capacity=2.6,
                     min_acceptable_price=54.0,
                 ),
                 CapacityMarketUnit(
-                    cmu_id="CMU004",
+                    cmu_id="CMU003",
                     name="Drax Power Station - clone",
                     capacity=2.6,
                     min_acceptable_price=52.0,
@@ -35,7 +35,7 @@ def baseline_scenario():
             name="EDF Energy",
             units=[
                 CapacityMarketUnit(
-                    cmu_id="CMU006",
+                    cmu_id="CMU004",
                     name="some small unit that exits early",
                     capacity=1.3,
                     min_acceptable_price=65.0,
@@ -46,7 +46,7 @@ def baseline_scenario():
             name="Orsted",
             units=[
                 CapacityMarketUnit(
-                    cmu_id="CMU002",
+                    cmu_id="CMU005",
                     name="Hornsea One",
                     capacity=1.2,
                     min_acceptable_price=10.0,

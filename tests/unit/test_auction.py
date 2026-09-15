@@ -6,7 +6,7 @@ from src.utils import get_capacity
 
 
 def test_run_round_no_units_leave(buyer, units):
-    remaining_units, auction_round = run_round(
+    remaining_units, auction_round, clearing_price = run_round(
         round_number=1,
         price=buyer.price_cap,
         buyer=buyer,
@@ -17,10 +17,11 @@ def test_run_round_no_units_leave(buyer, units):
     assert remaining_units == units
     assert auction_round.round_number == 1
     assert auction_round.price == buyer.price_cap
+    assert clearing_price == None
 
 
-def test_run_round_all_units_leave(buyer, units):
-    remaining_units, auction_round = run_round(
+def test_run_round_retains_units_when_all_try_to_leave(buyer, units):
+    remaining_units, auction_round, clearing_price = run_round(
         round_number=5,
         price=10,
         buyer=buyer,
@@ -28,9 +29,10 @@ def test_run_round_all_units_leave(buyer, units):
         active_units=units,
     )
 
-    assert len(remaining_units) == 0
+    assert len(remaining_units) == 3
     assert auction_round.round_number == 5
     assert auction_round.price == 10
+    assert clearing_price == 10
 
 
 @pytest.mark.parametrize(
